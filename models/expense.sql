@@ -1,3 +1,4 @@
+-- Active: 1679903567610@@127.0.0.1@5432@mvc_project@public
 CREATE DATABASE expenses;
 
 CREATE TABLE expenses(

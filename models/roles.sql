@@ -9,9 +9,10 @@ GRANT CONNECT ON DATABASE mvc_project TO readwrite_mvc_project;
 GRANT USAGE ON SCHEMA public TO readwrite_mvc_project;
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO readwrite_mvc_project;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO readwrite_mvc_project;
-
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO readwrite_mvc_project;
 --создание роли для пользования таблицами
 --создаем пользователя
 CREATE USER mvc_user WITH PASSWORD 'letsTest';
 GRANT readwrite_mvc_project TO mvc_user;
+SET ROLE  postgres;
 
