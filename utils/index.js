@@ -1,3 +1,4 @@
+//проверка получения всех данных, если какое-то из свойств пустое то возвращаем сообщение и перечень пустых полей
 exports.fieldValidator = (fields) => {
   const { title, price, category, essential, created_at } = fields;
   if (!title || !price || !category || !essential || !created_at) {
