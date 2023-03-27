@@ -1,11 +1,12 @@
-const formidable = require('formidable');
+const formidable = require('formidable');//модуль для парсинга форм в том числе которые передают файлы 
 const { endOfDay, startOfDay } = require('date-fns');
-const pool = require('../models/database');
-const { fieldValidator } = require('../utils/index');
-
+const pool = require('../models/database');//наша бд
+const { fieldValidator } = require('../utils/index');//проверка наличия данных всех полей формы
+//контроллер для добавления данных из формы в таблицу
 exports.create = (req, res) => {
   const form = new formidable.IncomingForm();
   form.keepExtensions = true;
+  //парсим форму передавая запрос и error first CB функцию 
   form.parse(req, async (err, fields) => {
     const { title, price, category, essential, created_at } = fields;
     // check for all fields
@@ -13,6 +14,7 @@ exports.create = (req, res) => {
       return res.status(400).json(fieldValidator(fields));
     }
     try {
+      //используем node-postgre для того что бы добавить запись в таблицу 
       const newExpense = await pool.query(
         'INSERT INTO expenses (title, price, category, essential, created_at) VALUES ($1, $2, $3, $4, $5)',
         [title, price, category, essential, created_at]
@@ -25,8 +27,11 @@ exports.create = (req, res) => {
     }
   });
 };
+
+//обновление записи в таблице 
 exports.update = (req, res) => {
   const form = new formidable.IncomingForm();
+  //переводим в число параметр из запроса
   const id = Number(req.params.id);
   form.keepExtensions = true;
   form.parse(req, async (err, fields) => {
@@ -49,7 +54,7 @@ exports.update = (req, res) => {
     }
   });
 };
-
+//получение записи по id, проверка параметра в mw функции
 exports.expenseById = async (req, res, next) => {
   const id = Number(req.params.id);
   try {
@@ -65,7 +70,7 @@ exports.expenseById = async (req, res, next) => {
     });
   }
 };
-
+//mw функция для получения записей в вилке дат
 exports.expenseByDate = async (req, res, next, date) => {
   try {
     const expenseQuery = await pool.query(
@@ -76,6 +81,7 @@ exports.expenseByDate = async (req, res, next, date) => {
       ]
     );
     const expenseList = expenseQuery.rows;
+    //проверка есть ли записи удовлетворяющие данной вилке дат.
     req.expense =
       expenseList.length > 0
         ? expenseList
@@ -87,9 +93,9 @@ exports.expenseByDate = async (req, res, next, date) => {
     });
   }
 };
-
+//возврат найденных в mw значений id или по вилке дат
 exports.read = (req, res) => res.json(req.expense);
-
+//удаление данных из таблицы
 exports.remove = async (req, res) => {
   const id = Number(req.params.id);
   try {
