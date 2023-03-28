@@ -73,9 +73,7 @@ exports.expenseById = async (req, res, next) => {
   }
 };
 //mw функция для получения записей в вилке дат
-exports.expenseByDate = async (req, res, next, dateParam) => {
-  //позволяет указывать дату в параметре в виде 'yyyy-mm-dd'
-  const date = Date.parse(dateParam);
+exports.expenseByDate = async (req, res, next, date) => {
   try {
     const expenseQuery = await pool.query(
       'SELECT * FROM expenses WHERE created_at BETWEEN $1 AND $2',

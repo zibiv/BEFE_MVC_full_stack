@@ -76,8 +76,9 @@ describe('Expense API', () => {
     // Test GET route to read a list of expenses
     describe('GET /expense/list/:expenseDate', () => {
       it('should read a list of expenses for a given date', (done) => {
+        const data = new Date('2012-12-06').getTime();
         request(app)
-          .get('/api/expense/list/2012-12-06')
+          .get('/api/expense/list/'+data)
           .end((err, res) => {
             expect(res.status).to.equal(200);
             expect(res.body).to.be.an('array');
