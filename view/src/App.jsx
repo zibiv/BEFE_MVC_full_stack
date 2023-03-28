@@ -5,6 +5,7 @@ import DatePicker from '@mui/lab/DesktopDatePicker';
 import { Container, Grid, TextField, Button, Typography } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { VictoryPie, VictoryTooltip } from 'victory';
+//компоненты
 import Modal from './components/Modal';
 import ExpenseList from './components/ExpenseList';
 // import functions to interact with controller.
@@ -79,6 +80,7 @@ function App() {
           />
         </Grid>
       </Grid>
+      {/*всплывающее окно при нажатии кнопки с +*/}
       {modal && (
         <Modal
           modal

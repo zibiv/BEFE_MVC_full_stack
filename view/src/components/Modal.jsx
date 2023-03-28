@@ -38,6 +38,7 @@ const TransitionModal = ({
     >
       <Fade in={modal}>
         <Box sx={style}>
+          {/* форма для добавления и обновления траты*/}
           <LogExpense
             expense={expenses}
             setExpenses={(expensesList) => setExpenses(expensesList)}
