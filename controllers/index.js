@@ -14,15 +14,17 @@ exports.create = (req, res) => {
       return res.status(400).json(fieldValidator(fields));
     }
     try {
+      const query = {
+        text: 'INSERT INTO expenses (title, price, category, essential, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+        values: [title, price, category, essential, created_at],
+        rowMode: 'array',
+      }
       //используем node-postgre для того что бы добавить запись в таблицу 
-      const newExpense = await pool.query(
-        'INSERT INTO expenses (title, price, category, essential, created_at) VALUES ($1, $2, $3, $4, $5)',
-        [title, price, category, essential, created_at]
-      );
+      const newExpense = await pool.query(query);
       return res.status(201).send(`User added: ${newExpense.rows}`);
     } catch (error) {
       return res.status(400).json({
-        error,
+        error: error.message,
       });
     }
   });
@@ -71,7 +73,9 @@ exports.expenseById = async (req, res, next) => {
   }
 };
 //mw функция для получения записей в вилке дат
-exports.expenseByDate = async (req, res, next, date) => {
+exports.expenseByDate = async (req, res, next, dateParam) => {
+  //позволяет указывать дату в параметре в виде 'yyyy-mm-dd'
+  const date = Date.parse(dateParam);
   try {
     const expenseQuery = await pool.query(
       'SELECT * FROM expenses WHERE created_at BETWEEN $1 AND $2',
@@ -89,7 +93,7 @@ exports.expenseByDate = async (req, res, next, date) => {
     return next();
   } catch (error) {
     return res.status(400).json({
-      error,
+      error: error.message,
     });
   }
 };
