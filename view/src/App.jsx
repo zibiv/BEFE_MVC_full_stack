@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import DatePicker from '@mui/lab/DesktopDatePicker';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { DatePicker } from '@mui/x-date-pickers';
 import { Container, Grid, TextField, Button, Typography } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { VictoryPie, VictoryTooltip } from 'victory';
@@ -9,17 +9,19 @@ import { VictoryPie, VictoryTooltip } from 'victory';
 import Modal from './components/Modal';
 import ExpenseList from './components/ExpenseList';
 // import functions to interact with controller.
-import { expenseByCategory } from './utils';
+import { fetchExpenses, expenseByCategory } from './utils';
 import './App.css';
 
 function App() {
   const [expenses, setExpenses] = useState([]);
   const [modal, setModal] = useState(false);
   const [id, setId] = useState(false);
+  //состояние используется как значение по умолчанию в календаре
   const [selectDate, setSelectDate] = useState(new Date());
 
   useEffect(() => {
     // update view from model w/ controller
+    fetchExpenses().then((res) => setExpenses(res));
   }, []);
 
   return (
@@ -37,12 +39,14 @@ function App() {
         >
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
-              label="Date of Expense"
+              label="Дата траты"
               value={selectDate}
-              minDate={new Date('2017-01-01')}
+              minDate={new Date('2023-01-01')}
               onChange={(newValue) => {
                 setSelectDate(newValue);
                 // update view from model w/ controller
+                //передаем новую дату переведя ее в мс в функция которая отпарвит запрос на сервер. Получая решенный промис обновляем список тарт 
+                fetchExpenses(newValue.getTime()).then((res) => setExpenses(res));
               }}
               renderInput={(params) => <TextField {...params} />}
             />
