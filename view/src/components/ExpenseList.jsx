@@ -8,9 +8,7 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-/* import user action function from utils dir
- *
- */
+import { deleteExpense } from '../utils';
 
 const ExpenseList = ({ expenses, setExpenses, setId }) => {
   const [options, setOptions] = useState();
@@ -19,7 +17,8 @@ const ExpenseList = ({ expenses, setExpenses, setId }) => {
     /* send user action to controller
      *
      */
-    setExpenses(expenses.filter((expense) => expense.expense_id !== _id));
+    const response = await deleteExpense(_id);
+    if(response.status === 200) setExpenses(expenses.filter((expense) => expense.expense_id !== _id));
   };
 
   return (

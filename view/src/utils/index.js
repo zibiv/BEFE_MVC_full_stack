@@ -1,9 +1,8 @@
+const origin = 'http://localhost:4001/';
 export const fetchExpenses = async (date) => {
   const selectDate = new Date(date).getTime() || new Date().getTime();
-  console.log(selectDate, `http://localhost:4001/api/expense/list/${selectDate}`);
-  const res = await fetch(`http://localhost:4001/api/expense/list/${selectDate}`);
+  const res = await fetch(origin + `api/expense/list/${selectDate}`);
   const resJson = await res.json();
-  console.log(resJson);
   return resJson;
 };
 //проверка статуса ответа на соответствие параметру + проверка тела запроса на наличие сообщение о пропущенных свойствах в теле запроса см код в controllers
@@ -21,7 +20,7 @@ export const resHandler = async (res, status) => {
 
 //отправка запроса на создание траты
 export const createExpense = async (data) => {
-  const res = await fetch(`/api/expense/create`, {
+  const res = await fetch(origin + `api/expense/create`, {
     method: 'POST',
     body: data,
   });
@@ -29,7 +28,7 @@ export const createExpense = async (data) => {
 };
 
 export const updateExpense = async (_id, data) => {
-  const res = await fetch(`/api/expense/${_id}`, {
+  const res = await fetch(origin + `api/expense/${_id}`, {
     method: 'PUT',
     body: data,
   });
@@ -37,12 +36,12 @@ export const updateExpense = async (_id, data) => {
 };
 
 export const fetchExpense = async (_id) => {
-  const res = await fetch(`api/expense/${_id}`);
+  const res = await fetch(origin + `api/expense/${_id}`);
   return res.json();
 };
 
 export const deleteExpense = async (_id) =>
-  fetch(`api/expense/${_id}`, {
+  fetch(origin + `api/expense/${_id}`, {
     method: 'DELETE',
   });
 
@@ -70,7 +69,6 @@ export const expenseByCategory = (expenses) => {
     //используется функция reducer которая будет совершать определенные в функции действия с каждым элементом массива и общим результатом этих действий
     //при первом запуске редъюсера берется пустой объект
     const curTotal = total;
-    console.log(Object.keys(total));
     //дальше перебираются его ключи в поисках названия категории и проверяется присутствует ли ключ с называнием категории в объекте total и значение содержащиеся в свойстве category в очередном объекте 
     if (Object.keys(total).includes(num.category)) {
       //если содержит создаем свойство с названием категории и складываем то что содержится под тем же свойством в total + то что содержится в свойстве price объекта траты
