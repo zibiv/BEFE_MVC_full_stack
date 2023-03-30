@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import DatePicker from '@mui/lab/DatePicker';
+import { DatePicker } from '@mui/x-date-pickers';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -12,10 +12,10 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { InputLabel, MenuItem, Select } from '@mui/material';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 // import user action and view update functions from utils dir
-import { formSetter } from '../utils';
+import { fetchExpense, formSetter } from '../utils';
 
 const theme = createTheme();
 
@@ -31,11 +31,12 @@ const LogExpense = ({ handleClose, _id, setExpenses }) => {
 
   const setExpenseData = async (id) => {
     // update view from model w/ controller
-    const expenseById = '';
-    setExpense(expenseById[0]);
+    const [expenseById] = await fetchExpense(id);
+    setExpense(expenseById);
   };
 
   useEffect(() => {
+    //если _id существует то запускается обработчик setExpenseData эта проверка происходит каждый раз при изменении _id
     if (_id) {
       setExpenseData(_id);
     }
@@ -114,7 +115,7 @@ const LogExpense = ({ handleClose, _id, setExpenses }) => {
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DatePicker
                   label="Date of Expense"
-                  value={expense.created_at}
+                  value={new Date(expense.created_at)}
                   minDate={new Date('2017-01-01')}
                   onChange={(newValue) => {
                     setExpense({ ...expense, created_at: newValue });
