@@ -15,7 +15,7 @@ import { InputLabel, MenuItem, Select } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 // import user action and view update functions from utils dir
-import { fetchExpense, formSetter } from '../utils';
+import { updateExpense, fetchExpense, formSetter, fetchExpenses, createExpense } from '../utils';
 
 const theme = createTheme();
 
@@ -31,6 +31,7 @@ const LogExpense = ({ handleClose, _id, setExpenses }) => {
 
   const setExpenseData = async (id) => {
     // update view from model w/ controller
+    //загружаются данные с сервера для тараты с конкретным id, полученные данные передаются в сеттер
     const [expenseById] = await fetchExpense(id);
     setExpense(expenseById);
   };
@@ -42,32 +43,39 @@ const LogExpense = ({ handleClose, _id, setExpenses }) => {
     }
   }, [_id]);
 
+  //после обновление или добавления данных на сервере и получения ответа, получение обновленных данных и обновление состояния 
   const expenseListRefresh = async (res, date) => {
     if (res) {
       return setErr(res);
     }
     // update view from model w/ controller
-    const expenseList = '';
+    const expenseList = await fetchExpenses(date);
     setExpenses(expenseList);
+    //закрытие окна и очистка id из состояния id компонента App 
     handleClose();
     return null;
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    //формируем данные формы вручную 
     const data = new FormData(event.currentTarget);
+    //проверяем наличие свойства essential
     if (data.get('essential') === null) {
       data.set('essential', false);
     }
     if (_id) {
+      //если prop _id передан в компонет, то значит мы должны отправить запрос на обновление данных
+      //добавляем в объект формы недостающее данные из состояния expence - это id и created_at
       formSetter(data, expense);
       // send user action to controller
-      const res = '';
+      const res = await updateExpense(_id, data);
       expenseListRefresh(res, expense.created_at);
     } else {
+      //если _id не предоставлен, то мы должны добавить новую трату, включив время в данные формы и отправить запрос на сервер
       data.set('created_at', new Date().toISOString());
       // send user action to controller
-      const res = '';
+      const res = await createExpense(data);
       expenseListRefresh(res);
     }
   };
