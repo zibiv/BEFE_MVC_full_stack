@@ -29,15 +29,18 @@ const ExpenseList = ({ expenses, setExpenses, setId }) => {
       }}
     >
       {typeof expenses !== 'string' ? (
+        //для каждой из трат мы создаем ListItem
         expenses.map(({ expense_id, title, price }) => (
           <ListItem key={expense_id}>
             <ListItemButton
               variant="text"
               onClick={() =>
+                //при нажатии на кнопку состоянию options назначается expense_id, если до этого там был null и наоборт, своего рода переключатель
                 setOptions(options === expense_id ? null : expense_id)
               }
             >
               <ListItemText primary={title} secondary={`$ ${price}`} />
+              {/*если expense_id этой траты совпадает с тем что находится в состоянии option то выбран именно этот элемент списка для данной траты, то выводятся элементы изменения траты и ее удаления*/}
               {options === expense_id && (
                 <Fragment>
                   <IconButton

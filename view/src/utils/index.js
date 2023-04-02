@@ -7,6 +7,7 @@ export const fetchExpenses = async (date) => {
 };
 //проверка статуса ответа на соответствие параметру + проверка тела запроса на наличие сообщение о пропущенных свойствах в теле запроса см код в controllers
 export const resHandler = async (res, status) => {
+  //если статус равняется параметру то возвращаем null, это будет сигналом для того обработчика где есть функция для передачи запроса к серверу, что ничего делать не надо все ОК
   if (res.status === status) {
     return null;
   }
@@ -45,10 +46,10 @@ export const deleteExpense = async (_id) =>
     method: 'DELETE',
   });
 
-export const formSetter = (data, form) => {
-  //получаем массив свойств объекта form для каждого из них 
-  Object.keys(form).forEach((key) => {
-    data.set(key, form[key]);
+export const formSetter = (data, expense) => {
+  //получаем массив свойств объекта form для каждого из них
+  Object.keys(expense).forEach((key) => {
+    data.set(key, expense[key]);
   });
 };
 

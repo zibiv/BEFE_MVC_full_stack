@@ -45,7 +45,7 @@ function App() {
               onChange={(newValue) => {
                 setSelectDate(newValue);
                 // update view from model w/ controller
-                //передаем новую дату переведя ее в мс в функция которая отпарвит запрос на сервер. Получая решенный промис обновляем список тарт 
+                //передаем новую дату переведя ее в мс в функция которая отпарвит запрос на сервер. Получая решенный промис обновляем список трат. Траты будут за эту конкретную дату 
                 fetchExpenses(newValue.getTime()).then((res) => setExpenses(res));
               }}
               renderInput={(params) => <TextField {...params} />}
@@ -61,6 +61,7 @@ function App() {
             <AddCircleOutlineIcon />
           </Button>
         </Grid>
+        {/* Если список трат массив и содержит элементыт то добавляем грид */}
         {Array.isArray(expenses) && expenses.length > 0 && (
           <Grid item xs={12} sm={6} md={6}>
             <Typography>Spending by Category</Typography>
@@ -74,6 +75,7 @@ function App() {
         )}
         <Grid item xs={12} sm={6} md={6}>
           <Typography>Expenses on This Date</Typography>
+          {/** компонент списка трат */}
           <ExpenseList
             setExpenses={(expensesList) => setExpenses(expensesList)}
             expenses={expenses}
