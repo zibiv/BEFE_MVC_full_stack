@@ -25,7 +25,7 @@ const LogExpense = ({ handleClose, _id, setExpenses }) => {
     price: '',
     category: '',
     essential: false,
-    created_at: new Date(),
+    created_at: new Date().toISOString(),
   });
   const [err, setErr] = useState([]);
 
@@ -67,13 +67,16 @@ const LogExpense = ({ handleClose, _id, setExpenses }) => {
     if (_id) {
       //если prop _id передан в компонет, то значит мы должны отправить запрос на обновление данных
       //добавляем в объект формы недостающее данные из состояния expence - это id и created_at
+      //форма не управляет id записи, он есть в состоянии, DatePicker не является инпутом формы, а при изменении даты передает ее в состояния
       formSetter(data, expense);
       // send user action to controller
       const res = await updateExpense(_id, data);
       expenseListRefresh(res, expense.created_at);
     } else {
-      //если _id не предоставлен, то мы должны добавить новую трату, включив время в данные формы и отправить запрос на сервер
-      data.set('created_at', new Date().toISOString());
+      //если _id не предоставлен, то мы должны добавить новую трату, включив дату/время в данные формы и отправить запрос на сервер
+      //время мы должны включить то что указанное в объекте состояния или если его нет поставить актуальное время и дату
+      data.set('created_at', expense.created_at || new Date().toISOString());
+      console.log(Object.fromEntries(data));
       // send user action to controller
       const res = await createExpense(data);
       expenseListRefresh(res);
@@ -126,7 +129,7 @@ const LogExpense = ({ handleClose, _id, setExpenses }) => {
                   value={new Date(expense.created_at)}
                   minDate={new Date('2017-01-01')}
                   onChange={(newValue) => {
-                    setExpense({ ...expense, created_at: newValue });
+                    setExpense({ ...expense, created_at: newValue.toISOString() });
                   }}
                   renderInput={(params) => <TextField {...params} />}
                 />
